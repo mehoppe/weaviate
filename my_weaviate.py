@@ -1,13 +1,14 @@
 import json
 import logging
 import os
+import pytest
 import requests
 import weaviate_connect
 import weaviate_search
 
 def build_class(client, class_obj, log):
     try:
-        test_schema = client.schema.create_class(class_obj)
+        client.schema.create_class(class_obj)
         log.info("Class obj created.")
     except:
         log.warning("Class obj already exists.")
