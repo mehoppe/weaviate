@@ -2,22 +2,21 @@ import json
 import logging
 import os
 import requests
-import weaviate
+import weaviate_connect
 
-
-def connect(weaviate_key, openai_api_key, log):
-    try:
-        client = weaviate.Client(
-            url="https://weaviate-64pq3jgx.weaviate.network",
-            auth_client_secret=weaviate.AuthApiKey(api_key=weaviate_key),
-            additional_headers = {
-                "X-OpenAI-Api-Key": openai_api_key
-            }
-        )
-        return client 
-    except:    
-        test = client.schema.get()
-        log.error("Connection to Weaviate fail: %s", test)
+# def connect(weaviate_key, openai_api_key, log):
+#     try:
+#         client = weaviate.Client(
+#             url="https://weaviate-64pq3jgx.weaviate.network",
+#             auth_client_secret=weaviate.AuthApiKey(api_key=weaviate_key),
+#             additional_headers = {
+#                 "X-OpenAI-Api-Key": openai_api_key
+#             }
+#         )
+#         return client 
+#     except:    
+#         test = client.schema.get()
+#         log.error("Connection to Weaviate fail: %s", test)
 
 def build_class(client, class_obj, log):
     try:
@@ -69,7 +68,7 @@ def main():
         }
     }
     
-    client = connect(weaviate_key, openai_api_key, log)
+    client = weaviate_connect.connect(weaviate_key, openai_api_key, log)
     log.info("Connected to Weaviate.")
     build_class(client, class_obj, log)
     log.info("Class Object created.")
