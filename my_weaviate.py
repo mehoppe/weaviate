@@ -3,20 +3,7 @@ import logging
 import os
 import requests
 import weaviate_connect
-
-# def connect(weaviate_key, openai_api_key, log):
-#     try:
-#         client = weaviate.Client(
-#             url="https://weaviate-64pq3jgx.weaviate.network",
-#             auth_client_secret=weaviate.AuthApiKey(api_key=weaviate_key),
-#             additional_headers = {
-#                 "X-OpenAI-Api-Key": openai_api_key
-#             }
-#         )
-#         return client 
-#     except:    
-#         test = client.schema.get()
-#         log.error("Connection to Weaviate fail: %s", test)
+import weaviate_search
 
 def build_class(client, class_obj, log):
     try:
