@@ -61,6 +61,8 @@ def main():
     log.info("Class Object created.")
     add_objs(client, log)
     log.info("Objects added to class/collection.")
+    result = weaviate_search.do_search(client, log)
+    print(json.dumps(result, indent=4))
 
 
 if __name__ == "__main__":
