@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import pytest
 import requests
 import weaviate_connect
 import weaviate_search
@@ -16,10 +15,7 @@ def build_class(client, class_obj, log):
         log.warning("Class obj already exists.")
 
 
-def add_objs(client, log):
-    resp = requests.get('https://raw.githubusercontent.com/weaviate-tutorials/quickstart/main/data/jeopardy_tiny.json')
-    data = json.loads(resp.text)  # Load data
-
+def add_objs(client, data, log):
     client.batch.configure(batch_size=100)  # Configure batch
     with client.batch as batch:  # Initialize a batch process
         for i, d in enumerate(data):  # Batch import data
@@ -35,7 +31,7 @@ def add_objs(client, log):
                 )
         log.debug("All objects added.")
 
-
+              
 def main():
     log = logging.getLogger("app")
     logging.basicConfig()
@@ -60,8 +56,11 @@ def main():
     # Build the class obj/collection if it does not exist
     build_class(client, class_obj, log)
     log.info("Class Object created.")
+    
     # Add objects to the collection
-    add_objs(client, log)
+    resp = requests.get('https://raw.githubusercontent.com/weaviate-tutorials/quickstart/main/data/jeopardy_tiny.json')
+    data = json.loads(resp.text)  # Load data
+    add_objs(client, data, log)
     log.info("Objects added to class/collection.")
     # Perform a query against the created collection
     result = weaviate_search.do_search(client, log)

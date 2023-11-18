@@ -31,5 +31,6 @@ def main():
     connect(weaviate_key, openai_api_key, log)
     log.debug("Connected to Weaviate.")
 
+
 if __name__ == "__main__":
     main()
