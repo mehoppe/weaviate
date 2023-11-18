@@ -6,12 +6,15 @@ import requests
 import weaviate_connect
 import weaviate_search
 
+
 def build_class(client, class_obj, log):
     try:
         client.schema.create_class(class_obj)
         log.info("Class obj created.")
     except:
+        print("Class obj:\n, %s", class_obj)
         log.warning("Class obj already exists.")
+
 
 def add_objs(client, log):
     resp = requests.get('https://raw.githubusercontent.com/weaviate-tutorials/quickstart/main/data/jeopardy_tiny.json')
@@ -26,42 +29,41 @@ def add_objs(client, log):
                 "question": d["Question"],
                 "category": d["Category"],
             }
-            try:
-                batch.add_data_object(
-                    data_object=properties,
-                    class_name="Question"
+            batch.add_data_object(
+                data_object=properties,
+                class_name="Question"
                 )
-            except:
-                log.error("OpenAI API Failure.")
         log.debug("All objects added.")
+
 
 def main():
     log = logging.getLogger("app")
     logging.basicConfig()
     log.setLevel(logging.WARNING)
 
-    try:
-        weaviate_key = os.environ["weaviate_key"]
-        openai_api_key = os.environ["openai_api_key"]
-        log.info("Environment variables loaded.")
-    except:
-        log.error("Environment variables NOT loaded.")
+    weaviate_key = os.environ["weaviate_key"]
+    openai_api_key = os.environ["openai_api_key"]
+    log.info("Environment variables loaded.")
 
+    # Class object/collection to create
     class_obj = {
         "class": "Question",
-        "vectorizer": "text2vec-openai",  # If set to "none" you must always provide vectors yourself. Could be any other "text2vec-*" also.
+        "vectorizer": "text2vec-openai",
         "moduleConfig": {
             "text2vec-openai": {},
-            "generative-openai": {}  # Ensure the `generative-openai` module is used for generative queries
+            "generative-openai": {}
         }
     }
     
     client = weaviate_connect.connect(weaviate_key, openai_api_key, log)
     log.info("Connected to Weaviate.")
+    # Build the class obj/collection if it does not exist
     build_class(client, class_obj, log)
     log.info("Class Object created.")
+    # Add objects to the collection
     add_objs(client, log)
     log.info("Objects added to class/collection.")
+    # Perform a query against the created collection
     result = weaviate_search.do_search(client, log)
     print(json.dumps(result, indent=4))
 
