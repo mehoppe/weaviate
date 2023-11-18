@@ -2,8 +2,13 @@
 
 ## Python program to:
 1. Connect to Weaviate
-1. Create an object class, or collection in an existing cluster
+1. Create an object class, or collection, in an existing cluster
 1. Query the cluster
+
+## Execution
+```
+python my_weaviate.py
+```
 
 ## Sample output
 ```
